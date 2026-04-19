@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: wedding-site
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://wedding-site.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: wedding-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: wedding-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: wedding-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: wedding-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: wedding-db
+          property: password
+      - key: FILESYSTEM_DISK
+        value: cloudinary
+      - key: CLOUDINARY_URL
+        value: cloudinary://436768251945478:6pSBqtIUF51m4p4qENqIHKpBzAE@dw7xj0bq0
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dw7xj0bq0
+      - key: CLOUDINARY_API_KEY
+        value: 436768251945478
+      - key: CLOUDINARY_API_SECRET
+        value: 6pSBqtIUF51m4p4qENqIHKpBzAE
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_DRIVER
+        value: database
+
+databases:
+  - name: wedding-db
+    databaseName: wedding
+    plan: free

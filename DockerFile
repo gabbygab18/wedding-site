@@ -1,0 +1,35 @@
+# Stage 1 - Build Frontend
+FROM node:18-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Stage 2 - Production
+FROM php:8.2-fpm-alpine
+
+RUN apk add --no-cache \
+    nginx git curl unzip \
+    libpng-dev oniguruma-dev \
+    libzip-dev \
+    postgresql-dev \
+    && docker-php-ext-install \
+    pdo pdo_pgsql pgsql mbstring zip gd
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+COPY . .
+COPY --from=frontend /app/public/build ./public/build
+
+RUN composer install --no-dev --optimize-autoloader
+
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
+
+EXPOSE 80
+CMD ["/start.sh"]
