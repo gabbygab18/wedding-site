@@ -4,36 +4,34 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     envVars:
+      - key: APP_NAME
+        value: "Wedding Site"
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        generateValue: true
+        value: base64:JyDOXUOhOJODtlEs98QAgvYKDgwgihgNq6kR20hi3L4=
       - key: APP_URL
         value: https://wedding-site.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        fromDatabase:
-          name: wedding-db
-          property: host
+        value: ep-gentle-flower-anxlge3z-pooler.c-6.us-east-1.aws.neon.tech
       - key: DB_PORT
-        fromDatabase:
-          name: wedding-db
-          property: port
+        value: 5432
       - key: DB_DATABASE
-        fromDatabase:
-          name: wedding-db
-          property: database
+        value: neondb
       - key: DB_USERNAME
-        fromDatabase:
-          name: wedding-db
-          property: user
+        value: neondb_owner
       - key: DB_PASSWORD
-        fromDatabase:
-          name: wedding-db
-          property: password
+        value: npg_AsiqvGK1EN9f
+      - key: DB_SSLMODE
+        value: require
+      - key: CACHE_DRIVER
+        value: database
+      - key: SESSION_DRIVER
+        value: database
       - key: FILESYSTEM_DISK
         value: cloudinary
       - key: CLOUDINARY_URL
@@ -44,12 +42,3 @@ services:
         value: 436768251945478
       - key: CLOUDINARY_API_SECRET
         value: 6pSBqtIUF51m4p4qENqIHKpBzAE
-      - key: SESSION_DRIVER
-        value: database
-      - key: CACHE_DRIVER
-        value: database
-
-databases:
-  - name: wedding-db
-    databaseName: wedding
-    plan: free
