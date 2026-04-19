@@ -35,7 +35,8 @@ body { font-family: $font; background: $bg; color: $text; }
   z-index: 199;
   opacity: 0;
   transition: opacity 0.3s ease;
-  &.active { opacity: 1; }
+    pointer-events: none; // ← add this
+  &.active { opacity: 1; pointer-events: all; } // ← add this }
 }
 
 // ─── Admin Layout ─────────────────────────────
