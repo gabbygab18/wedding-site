@@ -843,7 +843,7 @@ body { font-family: $font; background: $bg; color: $text; }
 @media (max-width: 768px) {
 
   .sidebar-overlay { display: block; }
-  .sidebar-toggle  { display: flex; }
+  .sidebar-toggle  { display: flex !important; }
   .sidebar-close   { display: block; }
 
   .admin-sidebar {

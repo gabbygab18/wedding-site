@@ -10,23 +10,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeBtn  = document.querySelector('.sidebar-close');
 
   function openSidebar() {
-    sidebar?.classList.add('open');
-    overlay?.classList.add('active');
+    if (!sidebar || !overlay) return;
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
 
   function closeSidebar() {
-    sidebar?.classList.remove('open');
-    overlay?.classList.remove('active');
+    if (!sidebar || !overlay) return;
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
     document.body.style.overflow = '';
   }
 
-  toggleBtn?.addEventListener('click', () => {
-    sidebar?.classList.contains('open') ? closeSidebar() : openSidebar();
-  });
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+  }
 
-  overlay?.addEventListener('click', closeSidebar);
-  closeBtn?.addEventListener('click', closeSidebar);
+  if (overlay) overlay.addEventListener('click', closeSidebar);
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
 
   // Close sidebar on nav item click (mobile)
   document.querySelectorAll('.nav-item').forEach(item => {
