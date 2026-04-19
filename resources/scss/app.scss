@@ -1,0 +1,1101 @@
+// ============================================
+// WEDDING INVITATION — Main SCSS
+// Aesthetic: Luxury editorial, cream & gold
+// ============================================
+
+// ─── Variables ───────────────────────────────
+$cream:         #F9F3E8;
+$cream-dark:    #EDE4D0;
+$gold:          #C9A96E;
+$gold-dark:     #A8834A;
+$gold-light:    #E0C898;
+$text-dark:     #2A1F14;
+$text-mid:      #5A4A38;
+$text-light:    #8A7A68;
+$rose:          #8B2635;
+$rose-light:    #C4535F;
+$white:         #FFFFFF;
+
+$font-display:  'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+$font-serif:    'Libre Baskerville', 'EB Garamond', Georgia, serif;
+$font-caps:     'Cinzel', serif;
+
+$ease-smooth:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// ─── Reset & Base ─────────────────────────────
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: $cream;
+  color: $text-dark;
+  font-family: $font-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+// ─── Utility ──────────────────────────────────
+.hidden { display: none !important; }
+
+// ─── Petals ───────────────────────────────────
+.petals-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  top: -20px;
+  font-size: 1.2rem;
+  opacity: 0;
+  animation: petalFall linear infinite;
+  &::before { content: '🌸'; }
+}
+
+@keyframes petalFall {
+  0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(100vh) rotate(720deg) translateX(60px); opacity: 0; }
+}
+
+// ─── Invitation Wrapper ────────────────────────
+.invitation-wrapper {
+  position: relative;
+  min-height: 100vh;
+}
+
+// ─── Background Audio Bar ─────────────────────
+.bg-audio-bar {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  z-index: 999;
+  background: rgba($white, 0.92);
+  border: 1px solid rgba($gold, 0.35);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem 0.5rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow:
+    0 8px 32px rgba($text-dark, 0.12),
+    0 2px 8px rgba($text-dark, 0.08);
+  backdrop-filter: blur(12px);
+  font-family: $font-caps;
+
+  .audio-note {
+    color: $gold;
+    font-size: 0.9rem;
+    animation: notePulse 2s ease-in-out infinite;
+  }
+
+  .audio-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: $text-mid;
+    text-transform: uppercase;
+  }
+
+  .audio-toggle {
+    background: $text-dark;
+    border: none;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $cream;
+    font-size: 0.7rem;
+    transition: background 0.2s, transform 0.2s;
+
+    &:hover {
+      background: $gold-dark;
+      transform: scale(1.08);
+    }
+  }
+}
+
+@keyframes notePulse {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50%       { opacity: 0.5; transform: translateY(-2px); }
+}
+
+// ─── Envelope Scene ───────────────────────────
+.envelope-scene {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $cream;
+  z-index: 100;
+  transition: opacity 0.8s $ease-smooth, transform 0.8s $ease-smooth;
+
+  &.scene-exit {
+    opacity: 0;
+    transform: scale(1.05);
+    pointer-events: none;
+  }
+
+  .scene-label {
+    margin-bottom: 2rem;
+    font-family: $font-display;
+    font-style: italic;
+    color: $text-light;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeUp 0.8s $ease-smooth 0.3s forwards;
+  }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Envelope ─────────────────────────────────
+.envelope-container {
+  position: relative;
+  width: 420px;
+  height: 290px;
+  perspective: 1200px;
+  opacity: 0;
+  animation: fadeUp 0.8s $ease-smooth 0.5s forwards;
+
+  @media (max-width: 480px) {
+    width: 320px;
+    height: 222px;
+  }
+}
+
+.envelope {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: envelopeFloat 4s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes envelopeFloat {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50%       { transform: translateY(-12px) rotate(1deg); }
+}
+
+.envelope.opening { animation: none !important; }
+
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #E8DCC8, #D4C5A9);
+  border-radius: 4px;
+  box-shadow:
+    0 20px 60px rgba($text-dark, 0.25),
+    0 8px 20px rgba($text-dark, 0.15),
+    inset 0 1px 0 rgba($white, 0.4);
+}
+
+.envelope-left-fold,
+.envelope-right-fold {
+  position: absolute;
+  bottom: 0;
+  width: 0; height: 0;
+  border-style: solid;
+}
+
+.envelope-left-fold {
+  left: 0;
+  border-width: 145px 0 0 210px;
+  border-color: transparent transparent transparent #D4C097;
+  opacity: 0.5;
+  @media (max-width: 480px) { border-width: 111px 0 0 160px; }
+}
+
+.envelope-right-fold {
+  right: 0;
+  border-width: 145px 210px 0 0;
+  border-color: transparent #D4C097 transparent transparent;
+  opacity: 0.5;
+  @media (max-width: 480px) { border-width: 111px 160px 0 0; }
+}
+
+.envelope-bottom-fold {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(160deg, #DDD0B0, #C9BB97);
+  clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+}
+
+.envelope-front {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+
+  .envelope-address {
+    text-align: center;
+    .to-line {
+      font-family: $font-display;
+      font-style: italic;
+      color: $text-light;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+    .guest-name {
+      font-family: $font-display;
+      font-size: 1.6rem;
+      color: $text-dark;
+      font-style: italic;
+    }
+  }
+}
+
+.envelope-flap {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 60%;
+  background: linear-gradient(160deg, #E8DCC8, #D4C5A9);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  z-index: 5;
+  transition: transform 1.2s $ease-smooth;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 4px 12px rgba($text-dark, 0.1);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba($white, 0.15), transparent);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+}
+
+.envelope.flap-open .envelope-flap {
+  transform: rotateX(-180deg);
+  box-shadow: none;
+}
+
+.wax-seal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  z-index: 6;
+  transition: all 0.5s $ease-spring;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 8px rgba($rose, 0.4));
+
+  &:hover { transform: translate(-50%, -50%) scale(1.05); }
+  &.seal-broken {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0) rotate(45deg);
+  }
+
+  svg { width: 100%; height: 100%; }
+}
+
+.letter {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  height: calc(100% - 20px);
+  background: linear-gradient(160deg, #FFFDF8, #F9F3E8);
+  border-radius: 2px;
+  z-index: 3;
+  transform: translateY(0px);
+  transition: transform 1.4s $ease-smooth;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba($text-dark, 0.12);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba($gold, 0.3);
+    pointer-events: none;
+  }
+
+  .letter-inner {
+    padding: 20px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
+.envelope.letter-rising .letter {
+  transform: translateY(-180px);
+  @media (max-width: 480px) { transform: translateY(-140px); }
+}
+
+.letter-ornament { color: $gold; font-size: 0.9rem; opacity: 0.7; }
+.letter-pre {
+  font-family: $font-display;
+  font-style: italic;
+  color: $text-light;
+  font-size: 0.65rem;
+}
+
+.couple-names {
+  font-family: $font-display;
+  line-height: 1;
+
+  .bride-name, .groom-name {
+    display: block;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: $text-dark;
+  }
+  .ampersand {
+    display: block;
+    color: $gold;
+    font-size: 0.9rem;
+  }
+}
+
+.letter-invite-text {
+  font-family: $font-serif;
+  font-size: 0.55rem;
+  color: $text-mid;
+  line-height: 1.5;
+}
+
+.letter-divider { color: $gold; font-size: 0.7rem; opacity: 0.6; }
+
+.letter-details {
+  font-family: $font-display;
+  .detail-date { font-size: 0.72rem; font-weight: 600; color: $text-dark; }
+  .detail-time, .detail-venue { font-size: 0.65rem; color: $text-mid; }
+  .detail-address { font-size: 0.55rem; color: $text-light; font-style: italic; }
+}
+
+.letter-rsvp-hint {
+  font-family: $font-display;
+  font-style: italic;
+  font-size: 0.6rem;
+  color: $gold;
+  opacity: 0.8;
+}
+
+// ─── Open Button ──────────────────────────────
+.open-btn {
+  margin-top: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  background: transparent;
+  border: 1px solid $gold;
+  color: $text-dark;
+  font-family: $font-caps;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  animation: fadeUp 0.8s $ease-smooth 0.8s forwards;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $gold;
+    transform: translateX(-100%);
+    transition: transform 0.4s $ease-smooth;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: $cream;
+    border-color: $gold;
+    &::before { transform: translateX(0); }
+  }
+
+  .open-btn-icon { font-size: 1.1rem; }
+}
+
+// ─── Invitation Content ────────────────────────
+.invitation-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba($gold, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba($gold, 0.06) 0%, transparent 50%),
+    $cream;
+
+  &.hidden { display: none !important; }
+}
+
+// ─── Section Common ───────────────────────────
+section {
+  padding: 80px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  @media (max-width: 768px) { padding: 60px 20px; }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 48px;
+
+  h2 {
+    font-family: $font-caps;
+    font-size: 1.2rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: $text-dark;
+  }
+
+  .section-ornament { color: $gold; font-size: 0.7rem; opacity: 0.7; }
+}
+
+// ─── Hero ─────────────────────────────────────
+.hero-section {
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+
+  .hero-ornament-top, .hero-ornament-bottom {
+    max-width: 400px;
+    margin: 0 auto 32px;
+    svg { width: 100%; }
+  }
+  .hero-ornament-bottom { margin: 32px auto 0; }
+
+  .hero-pre {
+    font-family: $font-display;
+    font-style: italic;
+    color: $text-light;
+    font-size: 1.05rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .hero-names {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 24px;
+
+    .hero-bride, .hero-groom {
+      font-family: $font-display;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1;
+      color: $text-dark;
+      font-style: italic;
+    }
+
+    .hero-amp {
+      font-family: $font-display;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: $gold;
+      font-style: italic;
+      line-height: 1;
+    }
+  }
+
+  .hero-invite {
+    font-family: $font-serif;
+    color: $text-mid;
+    font-size: 1rem;
+    line-height: 1.8;
+    font-style: italic;
+  }
+}
+
+// ─── Hero Video ───────────────────────────────
+.hero-video-section {
+  // Override section max-width for full bleed
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.hero-video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  max-height: 700px;
+  min-height: 400px;
+  overflow: hidden;
+  background: $text-dark;
+
+  @media (max-width: 768px) {
+    max-height: 100svh;
+  }
+
+  video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba($text-dark, 0.3) 0%,
+    rgba($text-dark, 0.55) 50%,
+    rgba($text-dark, 0.7) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+
+  .hero-pre {
+    font-family: $font-display;
+    font-style: italic;
+    color: rgba($white, 0.85);
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+  }
+
+  .hero-names {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 20px;
+
+    .hero-bride, .hero-groom {
+      font-family: $font-display;
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1;
+      color: $white;
+      font-style: italic;
+      text-shadow: 0 2px 20px rgba($text-dark, 0.4);
+    }
+
+    .hero-amp {
+      font-family: $font-display;
+      font-size: clamp(1.2rem, 4vw, 2.5rem);
+      color: $gold-light;
+      font-style: italic;
+      line-height: 1;
+    }
+  }
+
+  .hero-invite {
+    font-family: $font-serif;
+    color: rgba($white, 0.8);
+    font-size: 1rem;
+    line-height: 1.8;
+    font-style: italic;
+  }
+}
+
+// Video mute button
+.video-mute-btn {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba($white, 0.15);
+  border: 1px solid rgba($white, 0.3);
+  color: $white;
+  font-size: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.2s;
+
+  &:hover {
+    background: rgba($white, 0.25);
+    transform: scale(1.08);
+  }
+}
+
+// ─── Details Section ──────────────────────────
+.details-section {
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+
+    @media (max-width: 680px) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+}
+
+.detail-card {
+  text-align: center;
+  padding: 40px 24px;
+  background: rgba($white, 0.6);
+  border: 1px solid rgba($gold, 0.2);
+  position: relative;
+  backdrop-filter: blur(8px);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 40px; height: 2px;
+    background: $gold;
+  }
+
+  .detail-icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    color: $gold;
+    opacity: 0.8;
+  }
+
+  h3 {
+    font-family: $font-caps;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $text-light;
+    margin-bottom: 12px;
+  }
+
+  .detail-main {
+    font-family: $font-display;
+    font-size: 1.3rem;
+    color: $text-dark;
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+
+  .detail-sub {
+    font-size: 0.85rem;
+    color: $text-mid;
+    line-height: 1.5;
+  }
+}
+
+// ─── Map Section ──────────────────────────────
+.map-section {
+  max-width: 900px;
+}
+
+.map-card {
+  background: rgba($white, 0.6);
+  border: 1px solid rgba($gold, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.map-venue-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba($gold, 0.15);
+  flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .map-pin {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .map-venue-name {
+    font-family: $font-display;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: $text-dark;
+    line-height: 1.2;
+  }
+
+  .map-venue-address {
+    font-size: 0.82rem;
+    color: $text-light;
+    margin-top: 2px;
+  }
+
+  .map-directions-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 18px;
+    background: $text-dark;
+    color: $cream;
+    font-family: $font-caps;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &:hover { background: $gold-dark; }
+
+    @media (max-width: 600px) {
+      margin-left: 0;
+    }
+  }
+}
+
+.map-embed {
+  width: 100%;
+  line-height: 0;
+
+  iframe {
+    width: 100%;
+    height: 380px;
+    border: none;
+    display: block;
+
+    @media (max-width: 600px) { height: 260px; }
+  }
+}
+
+// ─── Story Section ────────────────────────────
+.story-section {
+  text-align: center;
+  .story-content {
+    max-width: 640px;
+    margin: 0 auto;
+    font-family: $font-display;
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: $text-mid;
+    font-style: italic;
+    position: relative;
+
+    &::before {
+      content: '\201C';
+      position: absolute;
+      top: -40px; left: -20px;
+      font-size: 8rem;
+      color: rgba($gold, 0.12);
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+  }
+}
+
+// ─── Gallery ──────────────────────────────────
+.gallery-section {
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 240px;
+    gap: 12px;
+
+    @media (max-width: 600px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 180px;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+      &:nth-child(1) { grid-row: span 2; }
+
+      img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s $ease-smooth;
+      }
+      &:hover img { transform: scale(1.05); }
+    }
+  }
+}
+
+// ─── Entourage ────────────────────────────────
+.entourage-section {
+  .entourage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+  }
+
+  .entourage-group {
+    padding: 28px 24px;
+    background: rgba($white, 0.5);
+    border: 1px solid rgba($gold, 0.15);
+
+    .role-title {
+      font-family: $font-caps;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: $gold-dark;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba($gold, 0.2);
+    }
+
+    ul {
+      list-style: none;
+      li {
+        font-family: $font-display;
+        font-size: 1rem;
+        color: $text-mid;
+        padding: 4px 0;
+        font-style: italic;
+
+        &::before {
+          content: '✦ ';
+          color: $gold;
+          font-size: 0.5rem;
+          font-style: normal;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
+
+// ─── RSVP Section ─────────────────────────────
+.rsvp-section {
+  text-align: center;
+
+  .rsvp-deadline {
+    font-family: $font-display;
+    font-style: italic;
+    color: $text-mid;
+    margin-bottom: 40px;
+    font-size: 1rem;
+  }
+}
+
+.rsvp-form {
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: left;
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-family: $font-caps;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: $text-light;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba($white, 0.7);
+      border: 1px solid rgba($gold, 0.3);
+      border-radius: 0;
+      font-family: $font-serif;
+      font-size: 0.9rem;
+      color: $text-dark;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      appearance: none;
+
+      &:focus {
+        border-color: $gold;
+        box-shadow: 0 0 0 3px rgba($gold, 0.1);
+      }
+    }
+
+    textarea { resize: vertical; }
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 20px;
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: $font-serif;
+      font-size: 0.9rem;
+      color: $text-mid;
+
+      input[type="radio"] {
+        width: auto;
+        appearance: auto;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .rsvp-submit {
+    width: 100%;
+    padding: 16px;
+    background: $text-dark;
+    color: $cream;
+    border: none;
+    font-family: $font-caps;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover { background: $gold-dark; }
+  }
+}
+
+// ─── Countdown ────────────────────────────────
+.countdown-section {
+  text-align: center;
+
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    @media (max-width: 480px) { gap: 12px; }
+  }
+
+  .countdown-item {
+    text-align: center;
+    min-width: 80px;
+
+    span {
+      display: block;
+      font-family: $font-display;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 300;
+      color: $text-dark;
+      line-height: 1;
+    }
+
+    label {
+      font-family: $font-caps;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: $text-light;
+      margin-top: 6px;
+      display: block;
+    }
+
+    &:not(:last-child) {
+      padding-right: 24px;
+      border-right: 1px solid rgba($gold, 0.3);
+      @media (max-width: 480px) { padding-right: 12px; }
+    }
+  }
+}
+
+// ─── Footer ───────────────────────────────────
+.invitation-footer {
+  text-align: center;
+  padding: 60px 24px 80px;
+  border-top: 1px solid rgba($gold, 0.2);
+
+  p {
+    font-family: $font-display;
+    font-style: italic;
+    color: $text-light;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .footer-names {
+    font-size: 1.8rem;
+    color: $text-dark;
+    font-style: italic;
+    margin: 8px 0 16px;
+  }
+
+  .footer-ornament {
+    color: $gold;
+    letter-spacing: 10px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin: 12px 0;
+  }
+
+  .footer-hashtag {
+    font-family: $font-caps;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: $gold-dark;
+  }
+}
+
+// ─── Reveal Animations ────────────────────────
+.reveal-text, .reveal-section, .reveal-card {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s $ease-smooth, transform 0.8s $ease-smooth;
+
+  &.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-card {
+  &:nth-child(2) { transition-delay: 0.15s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.45s; }
+}
+
+// ─── RSVP success message ─────────────────────
+.rsvp-success {
+  text-align: center;
+  padding: 40px;
+  font-family: $font-display;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: $text-mid;
+
+  .success-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+}

@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('weddings', function (Blueprint $table) {
+            $table->string('hero_video')->nullable()->after('love_story');
+            $table->string('background_music')->nullable()->after('hero_video');
+            $table->string('map_embed_url')->nullable()->after('background_music');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('weddings', function (Blueprint $table) {
+            $table->dropColumn(['hero_video', 'background_music', 'map_embed_url']);
+        });
+    }
+};
