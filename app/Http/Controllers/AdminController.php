@@ -13,18 +13,23 @@ class AdminController extends Controller
 {
     // ─── Dashboard ────────────────────────────────
     public function dashboard()
-{
-    $wedding      = Wedding::with(['photos', 'entourage', 'rsvps'])->first();
-    $totalRsvp    = Rsvp::count();
-    $attending    = Rsvp::where('attending', true)->count();
-    $notAttending = Rsvp::where('attending', false)->count();
-    $totalGuests  = Rsvp::where('attending', true)->sum('guests_count');
-    $recentRsvps  = Rsvp::latest()->take(5)->get();
+    {
+        $wedding = Wedding::with(['photos', 'entourage', 'rsvps'])->first();
+        $totalRsvp = Rsvp::count();
+        $attending = Rsvp::where('attending', true)->count();
+        $notAttending = Rsvp::where('attending', false)->count();
+        $totalGuests = Rsvp::where('attending', true)->sum('guests_count');
+        $recentRsvps = Rsvp::latest()->take(5)->get();
 
-    return view('admin.dashboard', compact(
-        'wedding', 'totalRsvp', 'attending', 'notAttending', 'totalGuests', 'recentRsvps'
-    ));
-}
+        return view('admin.dashboard', compact(
+            'wedding',
+            'totalRsvp',
+            'attending',
+            'notAttending',
+            'totalGuests',
+            'recentRsvps'
+        ));
+    }
 
     // ─── Wedding Details ──────────────────────────
     public function editWedding()
@@ -38,20 +43,20 @@ class AdminController extends Controller
         $wedding = Wedding::firstOrFail();
 
         $validated = $request->validate([
-            'bride_name'       => 'required|string|max:255',
-            'groom_name'       => 'required|string|max:255',
-            'wedding_date'     => 'required|date',
-            'ceremony_time'    => 'required',
-            'reception_time'   => 'nullable',
-            'venue_name'       => 'required|string|max:255',
-            'venue_address'    => 'required|string',
-            'reception_venue'  => 'nullable|string|max:255',
-            'love_story'       => 'nullable|string',
-            'hashtag'          => 'nullable|string|max:100',
-            'rsvp_enabled'     => 'boolean',
-            'rsvp_deadline'    => 'nullable|date',
-            'map_embed_url'    => 'nullable|string|max:5000',
-            'hero_video'       => 'nullable|file|mimes:mp4,webm,mov|max:102400',
+            'bride_name' => 'required|string|max:255',
+            'groom_name' => 'required|string|max:255',
+            'wedding_date' => 'required|date',
+            'ceremony_time' => 'required',
+            'reception_time' => 'nullable',
+            'venue_name' => 'required|string|max:255',
+            'venue_address' => 'required|string',
+            'reception_venue' => 'nullable|string|max:255',
+            'love_story' => 'nullable|string',
+            'hashtag' => 'nullable|string|max:100',
+            'rsvp_enabled' => 'boolean',
+            'rsvp_deadline' => 'nullable|date',
+            'map_embed_url' => 'nullable|string|max:5000',
+            'hero_video' => 'nullable|file|mimes:mp4,webm,mov|max:102400',
             'background_music' => 'nullable|file|mimes:mp3,ogg,wav,m4a|max:20480',
         ]);
 
@@ -103,24 +108,24 @@ class AdminController extends Controller
     public function photosIndex()
     {
         $wedding = Wedding::firstOrFail();
-        $photos  = $wedding->photos()->orderBy('sort_order')->get();
+        $photos = $wedding->photos()->orderBy('sort_order')->get();
         return view('admin.photos.index', compact('wedding', 'photos'));
     }
 
     public function storePhotos(Request $request)
     {
         $request->validate([
-            'photos'   => 'required|array',
+            'photos' => 'required|array',
             'photos.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:10240',
         ]);
 
-        $wedding   = Wedding::firstOrFail();
+        $wedding = Wedding::firstOrFail();
         $lastOrder = $wedding->photos()->max('sort_order') ?? 0;
 
         foreach ($request->file('photos') as $i => $file) {
             $path = $file->store('wedding/photos', 'public');
             $wedding->photos()->create([
-                'path'       => $path,
+                'path' => $path,
                 'sort_order' => $lastOrder + $i + 1,
             ]);
         }
@@ -145,7 +150,7 @@ class AdminController extends Controller
     // ─── Entourage ────────────────────────────────
     public function entourageIndex()
     {
-        $wedding   = Wedding::firstOrFail();
+        $wedding = Wedding::firstOrFail();
         $entourage = $wedding->entourage()->orderBy('role')->orderBy('name')->get();
         return view('admin.entourage.index', compact('wedding', 'entourage'));
     }
@@ -153,8 +158,8 @@ class AdminController extends Controller
     public function storeEntourage(Request $request)
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'role'       => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
             'wedding_id' => 'required|exists:weddings,id',
         ]);
 
@@ -172,25 +177,26 @@ class AdminController extends Controller
     // ─── RSVPs ────────────────────────────────────
     public function rsvpIndex(Request $request)
     {
-        $filter = $request->query('filter', 'all');
-        $query  = Rsvp::with('wedding')->latest();
+        $wedding = Wedding::firstOrFail();
+        $query = $wedding->rsvps()->latest();
 
-        if ($filter === 'attending') {
+        if ($request->filter === 'attending')
             $query->where('attending', true);
-        } elseif ($filter === 'declining') {
+        if ($request->filter === 'declining')
             $query->where('attending', false);
-        }
 
         $rsvps = $query->paginate(20)->withQueryString();
 
         $stats = [
-            'total'    => Rsvp::count(),
-            'attending'=> Rsvp::where('attending', true)->count(),
-            'declining'=> Rsvp::where('attending', false)->count(),
-            'guests'   => Rsvp::where('attending', true)->sum('guests_count'),
+            'total' => $wedding->rsvps()->count(),
+            'attending' => $wedding->rsvps()->where('attending', true)->count(),
+            'declining' => $wedding->rsvps()->where('attending', false)->count(),
+            'total_guests' => $wedding->rsvps()->where('attending', true)->sum('guests_count'),
         ];
 
-        return view('admin.rsvp.index', compact('rsvps', 'stats', 'filter'));
+        $guests = $wedding->guests()->with('rsvp')->orderBy('name')->get();
+
+        return view('admin.rsvp.index', compact('rsvps', 'stats', 'guests'));
     }
 
     public function destroyRsvp(Rsvp $rsvp)
@@ -203,7 +209,7 @@ class AdminController extends Controller
     {
         $rsvps = Rsvp::with('wedding')->latest()->get();
 
-        $csv  = "Name,Email,Attending,Guests,Message,Submitted\n";
+        $csv = "Name,Email,Attending,Guests,Message,Submitted\n";
         foreach ($rsvps as $r) {
             $csv .= implode(',', [
                 '"' . str_replace('"', '""', $r->guest_name) . '"',
@@ -216,8 +222,41 @@ class AdminController extends Controller
         }
 
         return response($csv, 200, [
-            'Content-Type'        => 'text/csv',
+            'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="rsvps-' . now()->format('Y-m-d') . '.csv"',
         ]);
+    }
+
+    // ─── Guest Registry ───────────────────────────
+    public function storeGuest(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'seats_allotted' => 'required|integer|min:1|max:20',
+        ]);
+
+        Wedding::firstOrFail()->guests()->create(
+            $request->only('name', 'seats_allotted')
+        );
+
+        return back()->with('success', 'Guest added to registry.');
+    }
+
+    public function destroyGuest(\App\Models\WeddingGuest $guest)
+    {
+        $guest->delete();
+        return back()->with('success', 'Guest removed from registry.');
+    }
+
+    public function updateGuest(Request $request, \App\Models\WeddingGuest $guest)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'seats_allotted' => 'required|integer|min:1|max:20',
+        ]);
+
+        $guest->update($request->only('name', 'seats_allotted'));
+
+        return back()->with('success', 'Guest updated.');
     }
 }

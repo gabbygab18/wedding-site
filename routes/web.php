@@ -7,6 +7,8 @@ use App\Http\Controllers\AdminController;
 // ─── Public Invitation ────────────────────────
 Route::get('/', [InvitationController::class, 'show'])->name('invitation');
 Route::post('/rsvp', [InvitationController::class, 'storeRsvp'])->name('rsvp.store');
+Route::get('/wedding/{wedding}/guests/search', [InvitationController::class, 'searchGuest'])
+    ->name('wedding.guests.search');
 
 // ─── Auth ─────────────────────────────────────
 Route::get('/admin/login', function () {
@@ -15,7 +17,7 @@ Route::get('/admin/login', function () {
 
 Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
     $credentials = $request->validate([
-        'email'    => 'required|email',
+        'email' => 'required|email',
         'password' => 'required',
     ]);
 
@@ -40,22 +42,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Wedding details
-    Route::get('/wedding',    [AdminController::class, 'editWedding'])->name('wedding.edit');
-    Route::put('/wedding',    [AdminController::class, 'updateWedding'])->name('wedding.update');
+    Route::get('/wedding', [AdminController::class, 'editWedding'])->name('wedding.edit');
+    Route::put('/wedding', [AdminController::class, 'updateWedding'])->name('wedding.update');
 
     // Photos
-    Route::get('/photos',              [AdminController::class, 'photosIndex'])->name('photos.index');
-    Route::post('/photos',             [AdminController::class, 'storePhotos'])->name('photos.store');
-    Route::delete('/photos/{photo}',   [AdminController::class, 'destroyPhoto'])->name('photos.destroy');
+    Route::get('/photos', [AdminController::class, 'photosIndex'])->name('photos.index');
+    Route::post('/photos', [AdminController::class, 'storePhotos'])->name('photos.store');
+    Route::delete('/photos/{photo}', [AdminController::class, 'destroyPhoto'])->name('photos.destroy');
     Route::patch('/photos/{photo}/order', [AdminController::class, 'updatePhotoOrder'])->name('photos.order');
 
     // Entourage
-    Route::get('/entourage',               [AdminController::class, 'entourageIndex'])->name('entourage.index');
-    Route::post('/entourage',              [AdminController::class, 'storeEntourage'])->name('entourage.store');
-    Route::delete('/entourage/{member}',   [AdminController::class, 'destroyEntourage'])->name('entourage.destroy');
+    Route::get('/entourage', [AdminController::class, 'entourageIndex'])->name('entourage.index');
+    Route::post('/entourage', [AdminController::class, 'storeEntourage'])->name('entourage.store');
+    Route::delete('/entourage/{member}', [AdminController::class, 'destroyEntourage'])->name('entourage.destroy');
 
     // RSVPs
-    Route::get('/rsvp',            [AdminController::class, 'rsvpIndex'])->name('rsvp.index');
-    Route::delete('/rsvp/{rsvp}',  [AdminController::class, 'destroyRsvp'])->name('rsvp.destroy');
-    Route::get('/rsvp/export',     [AdminController::class, 'exportRsvp'])->name('rsvp.export');
+    Route::get('/rsvp', [AdminController::class, 'rsvpIndex'])->name('rsvp.index');
+    Route::delete('/rsvp/{rsvp}', [AdminController::class, 'destroyRsvp'])->name('rsvp.destroy');
+    Route::get('/rsvp/export', [AdminController::class, 'exportRsvp'])->name('rsvp.export');
+
+    Route::post('/guests', [AdminController::class, 'storeGuest'])->name('guests.store');
+    Route::delete('/guests/{guest}', [AdminController::class, 'destroyGuest'])->name('guests.destroy');
+    Route::patch('/guests/{guest}', [AdminController::class, 'updateGuest'])->name('guests.update');
+
 });
